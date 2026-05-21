@@ -105,6 +105,21 @@ class Language_model (nn.Module):
         return all_responses
 
 
+    def forward_cls(self, fusion_embedding):
+        """Run LLM on full input (CLS token expected at end), return last token's hidden state.
+        ChatGLM hidden states are [seq, batch, hidden], so last token is [-1, :, :].
+        """
+        fusion_embedding = self.multimodal_prompt_wrap(fusion_embedding)
+        opt_tokens, _ = self.input_processing(fusion_embedding, mode='generate')
+        with torch.cuda.amp.autocast():
+            output = self.model(
+                input_ids=opt_tokens,
+                input_fusion=fusion_embedding,
+                output_hidden_states=True,
+                return_dict=True,
+            )
+        return output.hidden_states[-1][-1, :, :]  # [B, hidden_size]
+
     def input_processing(self, fusion_embedding, labels = None, mode = None):
         """
         Args:

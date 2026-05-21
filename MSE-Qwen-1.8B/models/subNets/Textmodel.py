@@ -121,6 +121,18 @@ class Language_model (nn.Module):
         return all_responses
 
 
+    def forward_cls(self, fusion_embedding):
+        """Run LLM on full input (CLS token expected at end), return last token's hidden state."""
+        fusion_embedding = self.multimodal_prompt_wrap(fusion_embedding)
+        opt_tokens, _, _, _, _ = self.input_processing(fusion_embedding, mode='generate')
+        with torch.cuda.amp.autocast():
+            output = self.model(
+                inputs_embeds=opt_tokens,
+                output_hidden_states=True,
+                return_dict=True,
+            )
+        return output.hidden_states[-1][:, -1, :]  # [B, hidden_size]
+
     def input_processing(self, fusion_embedding,  labels = None, mode = None):
         """
         Args:

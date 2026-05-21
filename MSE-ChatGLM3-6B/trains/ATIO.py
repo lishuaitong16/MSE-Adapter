@@ -16,6 +16,7 @@ class ATIO():
     def __init__(self):
         self.TRAIN_MAP = {
            'cmcm': CMCM,
+           'cmcm_cls': CMCM,
         }
     
     def getTrain(self, args):

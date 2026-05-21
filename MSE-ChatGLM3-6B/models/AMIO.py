@@ -14,7 +14,8 @@ from models.multiTask import *
 __all__ = ['AMIO']
 
 MODEL_MAP = {
-    'cmcm': CMCM
+    'cmcm': CMCM,
+    'cmcm_cls': CMCM,
 }
 
 class AMIO(nn.Module):

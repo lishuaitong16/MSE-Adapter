@@ -32,6 +32,17 @@ class CMCM(nn.Module):
         fusion_input_size = 256
         self.mutli_scale_fusion = mutli_scale_fusion(input_size=fusion_input_size, output_size= text_in, pseudo_tokens= args.pseudo_tokens)
 
+        self.train_mode = args.train_mode
+        if args.train_mode == 'classification':
+            n_cls = len(args.label_index_mapping)
+            self.cls_token = nn.Parameter(torch.zeros(1, 1, text_in))
+            nn.init.normal_(self.cls_token, std=0.02)
+            self.cls_head = nn.Sequential(
+                nn.Linear(text_in, text_in // 2),
+                nn.GELU(),
+                nn.Linear(text_in // 2, n_cls)
+            )
+
 
     def forward(self, labels, text, audio, video):
         audio, audio_len = audio
@@ -48,16 +59,28 @@ class CMCM(nn.Module):
         fusion_h= self.mutli_scale_fusion(fusion_h)
 
 
-        LLM_input = torch.cat([fusion_h, text], dim=1)
-
-        LLM_output = self.LLM(LLM_input, labels)
-
-        res = {
-            'Loss': LLM_output.loss,
-            'Feature_a': audio_h,
-            'Feature_v': video_h,
-            'Feature_f': fusion_h,
-        }
+        if self.train_mode == 'classification':
+            B = text.size(0)
+            cls = self.cls_token.expand(B, -1, -1)
+            LLM_input = torch.cat([fusion_h, text, cls], dim=1)
+            hidden = self.LLM.forward_cls(LLM_input)
+            logits = self.cls_head(hidden)
+            loss = F.cross_entropy(logits, labels.long().to(logits.device))
+            res = {
+                'Loss': loss,
+                'Feature_a': audio_h,
+                'Feature_v': video_h,
+                'Feature_f': fusion_h,
+            }
+        else:
+            LLM_input = torch.cat([fusion_h, text], dim=1)
+            LLM_output = self.LLM(LLM_input, labels)
+            res = {
+                'Loss': LLM_output.loss,
+                'Feature_a': audio_h,
+                'Feature_v': video_h,
+                'Feature_f': fusion_h,
+            }
         return res
 
     def generate(self, text, audio, video):
@@ -78,11 +101,17 @@ class CMCM(nn.Module):
 
         # concatenate mutli_scale_fusion and text_embedding
 
-        LLM_input = torch.cat([fusion_h, text], dim=1)
-
-        LLM_output = self.LLM.generate(LLM_input)
-
-        return LLM_output
+        if self.train_mode == 'classification':
+            B = text.size(0)
+            cls = self.cls_token.expand(B, -1, -1)
+            LLM_input = torch.cat([fusion_h, text, cls], dim=1)
+            hidden = self.LLM.forward_cls(LLM_input)
+            logits = self.cls_head(hidden)
+            preds = logits.argmax(dim=-1).tolist()
+            return [float(p) for p in preds]
+        else:
+            LLM_input = torch.cat([fusion_h, text], dim=1)
+            return self.LLM.generate(LLM_input)
 
 
 

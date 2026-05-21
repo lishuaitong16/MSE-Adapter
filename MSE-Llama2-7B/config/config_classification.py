@@ -7,7 +7,8 @@ class ConfigClassification():
     def __init__(self, args):
         # hyper parameters for models
         HYPER_MODEL_MAP = {
-            'cmcm': self.__CMCM
+            'cmcm': self.__CMCM,
+            'cmcm_cls': self.__CMCM,
         }
         # hyper parameters for datasets
         self.root_dataset_dir = args.root_dataset_dir
