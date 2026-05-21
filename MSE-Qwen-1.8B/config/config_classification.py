@@ -44,7 +44,7 @@ class ConfigClassification():
             },
             'meld':{
                 'unaligned': {
-                    'dataPath': os.path.join(root_dataset_dir, 'MELD'),
+                    'dataPath': os.path.join(root_dataset_dir, 'MELD_processed'),
                     'seq_lens': (65, 157, 32),
                     # (text, audio, video)
                     'feature_dims': (2048, 64, 64),
@@ -56,7 +56,7 @@ class ConfigClassification():
             },
             'cherma':{
                 'unaligned': {
-                    'dataPath': os.path.join(root_dataset_dir, 'CHERMA0723'),
+                    'dataPath': os.path.join(root_dataset_dir, 'CHERMA0723_processed'),
                     # (batch_size, seq_lens, feature_dim)
                     'seq_lens': (78, 543, 16), # (text, audio, video)
                     'feature_dims': (2048, 1024, 2048), # (text, audio, video)

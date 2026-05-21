@@ -1,0 +1,28 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyc
+
+# Distribution / packaging
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+.venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Model checkpoints & results
+results/models/
+*.pth
+*.whl
+
+# Logs
+logs/
+
+# Comparison outputs
+comparison_*.csv

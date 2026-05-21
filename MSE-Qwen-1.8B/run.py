@@ -170,7 +170,7 @@ def set_log(args):
     logger = logging.getLogger() 
     logger.setLevel(logging.DEBUG)
 
-    for ph in logger.handlers:
+    for ph in logger.handlers[:]:
         logger.removeHandler(ph)
     # add FileHandler to log file
     formatter_file = logging.Formatter('%(asctime)s:%(levelname)s:%(message)s', datefmt='%Y-%m-%d %H:%M:%S')
@@ -196,7 +196,7 @@ def parse_args():
                         help='support CMCM')
     parser.add_argument('--datasetName', type=str, default='sims',
                         help='support mosi/mosei/simsv2/iemocap/meld/cherma')
-    parser.add_argument('--root_dataset_dir', type=str, default='/home/young/DL/multimodal_dataset/',
+    parser.add_argument('--root_dataset_dir', type=str, default='/data/lishuaitong/data/emotion',
                         help='Location of the root directory where the dataset is stored')
     parser.add_argument('--num_workers', type=int, default=0,
                         help='num workers of loading data')
@@ -204,21 +204,32 @@ def parse_args():
                         help='path to save results.')
     parser.add_argument('--res_save_dir', type=str, default='results/results',
                         help='path to save results.')
-    parser.add_argument('--pretrain_LM', type=str, default='/data/huggingface_model/Qwen/Qwen-1_8B/',
+    parser.add_argument('--pretrain_LM', type=str, default='/data/lishuaitong/model/Qwen-1_8B',
                         help='path to load pretrain LLM.')
     parser.add_argument('--gpu_ids', type=list, default=[],
-                        help='indicates the gpus will be used. If none, the most-free gpu will be used!')   #使用GPU1
+                        help='indicates the gpus will be used. If none, the most-free gpu will be used!')
+    parser.add_argument('--task_type', type=str, default='regression',
+                        help='regression / classification')
     return parser.parse_args()
 
 if __name__ == '__main__':
     args = parse_args()
-    logger = set_log(args)
-    for data_name in [ 'simsv2', 'mosei', 'meld', 'cherma']:
+
+    regression_datasets = ['simsv2', 'mosei']
+    classification_datasets = ['meld', 'cherma']
+
+    if args.task_type == 'regression':
+        datasets = regression_datasets
+    else:
+        datasets = classification_datasets
+
+    for data_name in datasets:
         if data_name in ['mosi', 'mosei', 'sims', 'simsv2']:
             args.train_mode = 'regression'
         else:
             args.train_mode = 'classification'
 
         args.datasetName = data_name
-        args.seeds = [1111, 2222, 3333, 4444, 5555]
+        args.seeds = [1111]
+        logger = set_log(args)  # per-dataset log file: cmcm-{datasetName}.log
         run_normal(args)
