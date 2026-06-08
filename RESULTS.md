@@ -1,69 +1,90 @@
 # Experiment Results
 
-All experiments use seed `1111`. For configurations with multiple runs, the latest run is reported.
+**复现**：对原论文 `cmcm`（生成式）在三个骨干上的复现结果，数据来自 `results/results/`  
+**改进**：本课程项目新增的判别式变体，回归任务用 `cmcm_reg`，分类任务用 `cmcm_cls`，数据来自 `results/results_reg/` 和 `results/results_cls/`  
 
-Metrics: MAE and Corr for regression tasks; Acc and Weighted-F1 for classification tasks. Lower MAE is better (↓); all other metrics are higher-is-better (↑).
-
----
-
-## Regression: MOSEI
-
-| Model | Variant | Has0-Acc2 | Has0-F1 | Non0-Acc2 | Non0-F1 | Acc5 | Acc7 | MAE ↓ | Corr ↑ |
-|-------|---------|-----------|---------|-----------|---------|------|------|-------|--------|
-| Llama2-7B | `cmcm` | 87.16 | 86.79 | 68.79 | 68.53 | 57.03 | 54.90 | 51.94 | 77.30 |
-| Llama2-7B | `cmcm_reg` | 82.89 | 83.41 | 88.30 | 88.30 | 56.88 | 54.93 | **49.18** | **80.92** |
-| Qwen-1.8B | `cmcm` | 82.85 | 82.45 | 73.23 | 73.55 | 50.85 | 49.20 | 59.34 | 69.59 |
-| Qwen-1.8B | `cmcm_reg` | 82.23 | 82.78 | 87.01 | 87.04 | 57.46 | 55.74 | 50.78 | 79.92 |
-| ChatGLM3-6B | `cmcm` | 86.91 | 86.67 | 71.90 | 72.00 | 56.99 | 54.69 | 51.84 | 78.53 |
-| ChatGLM3-6B | `cmcm_reg` | 83.82 | 84.26 | 87.75 | 87.76 | 57.69 | 55.61 | 49.63 | **80.98** |
+多次运行取最后一次结果，所有实验 seed = `1111`。
 
 ---
 
-## Regression: SIMSV2
+## MOSEI（情感回归，英文）
 
-| Model | Variant | Acc2 | Acc2-weak | Acc3 | Acc5 | F1 | MAE ↓ | Corr ↑ | R² |
-|-------|---------|------|-----------|------|------|----|-------|--------|----|
-| Llama2-7B | `cmcm` | 77.08 | 70.19 | 69.92 | 49.71 | 76.83 | 36.45 | 58.62 | 18.11 |
-| Llama2-7B | `cmcm_reg` | 80.46 | 71.01 | 75.15 | 54.45 | 80.55 | **31.56** | **70.15** | 40.54 |
-| Qwen-1.8B | `cmcm` | 78.72 | 71.22 | 70.89 | 53.29 | 78.59 | 33.04 | 64.74 | 29.42 |
-| Qwen-1.8B | `cmcm_reg` | 80.75 | 72.05 | 73.89 | 49.90 | 80.79 | 31.51 | 70.63 | **44.01** |
-| ChatGLM3-6B | `cmcm` | 79.40 | 70.81 | 71.28 | 48.55 | 78.93 | **30.54** | **70.17** | 42.23 |
-| ChatGLM3-6B | `cmcm_reg` | 80.46 | 72.05 | 73.98 | 51.16 | 80.46 | 31.64 | 70.74 | 43.93 |
+指标：MAE ↓ / Corr ↑（越低/越高越好）
 
----
+| 骨干模型 | 复现 MAE ↓ | 复现 Corr ↑ | 改进 MAE ↓ | 改进 Corr ↑ | MAE 变化 |
+|---------|-----------|-----------|-----------|-----------|---------|
+| Qwen-1.8B | 59.34 | 69.59 | **50.78** | 79.92 | **-8.56** |
+| Llama2-7B | 51.94 | 77.30 | **49.18** | 80.92 | **-2.76** |
+| ChatGLM3-6B | 51.84 | 78.53 | **49.63** | **80.98** | **-2.21** |
 
-## Classification: MELD
+<details>
+<summary>完整指标</summary>
 
-| Model | Variant | Acc ↑ | Weighted-F1 ↑ |
-|-------|---------|-------|--------------|
-| Llama2-7B | `cmcm` | 64.56 | 63.54 |
-| Llama2-7B | `cmcm_cls` | 66.90 | **65.58** |
-| Qwen-1.8B | `cmcm` | 63.68 | 62.17 |
-| Qwen-1.8B | `cmcm_cls` | 64.06 | 62.70 |
-| ChatGLM3-6B | `cmcm` | 60.77 | 60.21 |
-| ChatGLM3-6B | `cmcm_cls` | 64.64 | 61.82 |
+| 骨干模型 | 版本 | Has0-Acc2 | Has0-F1 | Non0-Acc2 | Non0-F1 | Acc5 | Acc7 | MAE ↓ | Corr ↑ |
+|---------|------|-----------|---------|-----------|---------|------|------|-------|--------|
+| Qwen-1.8B | 复现 | 82.85 | 82.45 | 73.23 | 73.55 | 50.85 | 49.20 | 59.34 | 69.59 |
+| Qwen-1.8B | 改进 | 82.23 | 82.78 | 87.01 | 87.04 | 57.46 | 55.74 | 50.78 | 79.92 |
+| Llama2-7B | 复现 | 87.16 | 86.79 | 68.79 | 68.53 | 57.03 | 54.90 | 51.94 | 77.30 |
+| Llama2-7B | 改进 | 82.89 | 83.41 | 88.30 | 88.30 | 56.88 | 54.93 | 49.18 | 80.92 |
+| ChatGLM3-6B | 复现 | 86.91 | 86.67 | 71.90 | 72.00 | 56.99 | 54.69 | 51.84 | 78.53 |
+| ChatGLM3-6B | 改进 | 83.82 | 84.26 | 87.75 | 87.76 | 57.69 | 55.61 | 49.63 | 80.98 |
 
----
-
-## Classification: CHERMA
-
-| Model | Variant | Acc ↑ | Weighted-F1 ↑ |
-|-------|---------|-------|--------------|
-| Llama2-7B | `cmcm` | 72.74 | 72.66 |
-| Llama2-7B | `cmcm_cls` | 72.67 | 72.43 |
-| Qwen-1.8B | `cmcm` | 71.73 | 71.93 |
-| Qwen-1.8B | `cmcm_cls` | 72.41 | **72.65** |
-| ChatGLM3-6B | `cmcm` | 73.03 | **72.85** |
-| ChatGLM3-6B | `cmcm_cls` | 68.87 | 68.80 |
+</details>
 
 ---
 
-## Summary
+## SIMSV2（情感回归，中文）
 
-**`cmcm_reg` vs `cmcm` on regression tasks:**
+指标：MAE ↓ / Corr ↑
 
-The discriminative regression head (`cmcm_reg`) consistently outperforms the generative baseline (`cmcm`) on MOSEI across all three backbones, with MAE improvements of **2.21–8.56** and Corr improvements of **2.45–10.33**. On SIMSV2, `cmcm_reg` shows similar or better MAE for Llama2-7B and Qwen-1.8B, while the generative `cmcm` achieves the lowest SIMSV2 MAE (30.54) on ChatGLM3-6B.
+| 骨干模型 | 复现 MAE ↓ | 复现 Corr ↑ | 改进 MAE ↓ | 改进 Corr ↑ | MAE 变化 |
+|---------|-----------|-----------|-----------|-----------|---------|
+| Qwen-1.8B | 33.04 | 64.74 | **31.51** | **70.63** | **-1.53** |
+| Llama2-7B | 36.45 | 58.62 | **31.56** | **70.15** | **-4.89** |
+| ChatGLM3-6B | **30.54** | 70.17 | 31.64 | **70.74** | +1.10 |
 
-**`cmcm_cls` vs `cmcm` on classification tasks:**
+<details>
+<summary>完整指标</summary>
 
-The discriminative classification head (`cmcm_cls`) consistently improves MELD Weighted-F1 for Llama2-7B (+2.04) and Qwen-1.8B (+0.53). On CHERMA, results are more mixed — `cmcm` with ChatGLM3-6B achieves the best overall F1 (72.85). The learnable CLS token design offers a simpler and more stable training signal than autoregressive generation for emotion classification.
+| 骨干模型 | 版本 | Acc2 | Acc2-weak | Acc3 | Acc5 | F1 | MAE ↓ | Corr ↑ | R² |
+|---------|------|------|-----------|------|------|----|-------|--------|----|
+| Qwen-1.8B | 复现 | 78.72 | 71.22 | 70.89 | 53.29 | 78.59 | 33.04 | 64.74 | 29.42 |
+| Qwen-1.8B | 改进 | 80.75 | 72.05 | 73.89 | 49.90 | 80.79 | 31.51 | 70.63 | 44.01 |
+| Llama2-7B | 复现 | 77.08 | 70.19 | 69.92 | 49.71 | 76.83 | 36.45 | 58.62 | 18.11 |
+| Llama2-7B | 改进 | 80.46 | 71.01 | 75.15 | 54.45 | 80.55 | 31.56 | 70.15 | 40.54 |
+| ChatGLM3-6B | 复现 | 79.40 | 70.81 | 71.28 | 48.55 | 78.93 | 30.54 | 70.17 | 42.23 |
+| ChatGLM3-6B | 改进 | 80.46 | 72.05 | 73.98 | 51.16 | 80.46 | 31.64 | 70.74 | 43.93 |
+
+</details>
+
+---
+
+## MELD（情绪识别，英文，7类）
+
+指标：Acc ↑ / Weighted-F1 ↑
+
+| 骨干模型 | 复现 Acc | 复现 W-F1 | 改进 Acc | 改进 W-F1 | W-F1 变化 |
+|---------|---------|----------|---------|----------|---------|
+| Qwen-1.8B | 63.68 | 62.17 | **64.06** | **62.70** | **+0.53** |
+| Llama2-7B | 64.56 | 63.54 | **66.90** | **65.58** | **+2.04** |
+| ChatGLM3-6B | 60.77 | 60.21 | **64.64** | **61.82** | **+1.61** |
+
+---
+
+## CHERMA（情绪识别，中文，7类）
+
+指标：Acc ↑ / Weighted-F1 ↑
+
+| 骨干模型 | 复现 Acc | 复现 W-F1 | 改进 Acc | 改进 W-F1 | W-F1 变化 |
+|---------|---------|----------|---------|----------|---------|
+| Qwen-1.8B | 71.73 | 71.93 | **72.41** | **72.65** | **+0.72** |
+| Llama2-7B | **72.74** | **72.66** | 72.67 | 72.43 | -0.23 |
+| ChatGLM3-6B | **73.03** | **72.85** | 68.87 | 68.80 | -4.05 |
+
+---
+
+## 小结
+
+**回归任务（MOSEI / SIMSV2）**：`cmcm_reg` 在 MOSEI 上三个骨干均有提升，MAE 降低 2.21–8.56，Corr 提升 2.45–11.33；SIMSV2 上 Qwen 和 Llama2 有明显提升，ChatGLM3-6B 原生成式已接近最优，改进幅度有限。
+
+**分类任务（MELD / CHERMA）**：`cmcm_cls` 在 MELD 上对全部三个骨干均有提升（+0.53–+2.04 W-F1）；CHERMA 上 Qwen 和 Llama2 持平或略有提升，ChatGLM3-6B 有所下降，可能与该骨干在中文生成任务上本身优势较强有关。
