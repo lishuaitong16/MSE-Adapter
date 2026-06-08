@@ -187,6 +187,34 @@ MSE-{Model}/
 
 ---
 
+## 实验结果
+
+完整结果见 [RESULTS.md](RESULTS.md)，下表列出各模型在四个数据集上的核心指标。
+
+### 回归任务（MAE ↓ / Corr ↑）
+
+| 模型 | 变体 | MOSEI MAE ↓ | MOSEI Corr ↑ | SIMSV2 MAE ↓ | SIMSV2 Corr ↑ |
+|------|-----|------------|-------------|-------------|--------------|
+| Llama2-7B | `cmcm` | 51.94 | 77.30 | 36.45 | 58.62 |
+| Llama2-7B | `cmcm_reg` | **49.18** | 80.92 | **31.56** | 70.15 |
+| Qwen-1.8B | `cmcm` | 59.34 | 69.59 | 33.04 | 64.74 |
+| Qwen-1.8B | `cmcm_reg` | 50.78 | 79.92 | 31.51 | 70.63 |
+| ChatGLM3-6B | `cmcm` | 51.84 | 78.53 | **30.54** | 70.17 |
+| ChatGLM3-6B | `cmcm_reg` | 49.63 | **80.98** | 31.64 | **70.74** |
+
+### 分类任务（Weighted-F1 ↑）
+
+| 模型 | 变体 | MELD W-F1 ↑ | CHERMA W-F1 ↑ |
+|------|-----|------------|--------------|
+| Llama2-7B | `cmcm` | 63.54 | 72.66 |
+| Llama2-7B | `cmcm_cls` | **65.58** | 72.43 |
+| Qwen-1.8B | `cmcm` | 62.17 | 71.93 |
+| Qwen-1.8B | `cmcm_cls` | 62.70 | **72.65** |
+| ChatGLM3-6B | `cmcm` | 60.21 | **72.85** |
+| ChatGLM3-6B | `cmcm_cls` | 61.82 | 68.80 |
+
+---
+
 ## 致谢
 
 - 原论文与官方实现：[AZYoung/MSE-Adapter](https://github.com/AZYoung233/MSE-Adapter)
