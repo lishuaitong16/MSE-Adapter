@@ -9,6 +9,7 @@ class ConfigRegression():
         HYPER_MODEL_MAP = {
             'cmcm': self.__CMCM,
             'cmcm_cls': self.__CMCM,
+            'cmcm_reg': self.__CMCM,
         }
         # hyper parameters for datasets
         self.root_dataset_dir = args.root_dataset_dir
@@ -113,7 +114,7 @@ class ConfigRegression():
                     'pseudo_tokens': 4,
                     'task_specific_prompt': '请对上述多模态内容的情感强度进行预测，范围在[-1.0, 1.0]之间。响应: 情感为',
                     'batch_size': 8,
-                    'learning_rate': 5e-5,
+                    'learning_rate': 5e-4,
                     # feature subNets
                     'a_lstm_hidden_size': 64,
                     'v_lstm_hidden_size': 64,

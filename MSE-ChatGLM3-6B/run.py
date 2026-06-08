@@ -185,15 +185,15 @@ def parse_args():
                         help='tune parameters ?')
     parser.add_argument('--train_mode', type=str, default="regression",
                         help='regression / classification')
-    parser.add_argument('--modelName', type=str, default='cmcm_cls',
-                        help='support cmcm / cmcm_cls')
+    parser.add_argument('--modelName', type=str, default='cmcm_reg',
+                        help='support cmcm / cmcm_cls / cmcm_reg')
     parser.add_argument('--datasetName', type=str, default='mosi',
                         help='support mosei/simsv2/meld/cherma')
     parser.add_argument('--root_dataset_dir', type=str, default='/data/lishuaitong/data/emotion',
                         help='Location of the root directory where the dataset is stored')
     parser.add_argument('--num_workers', type=int, default=0,
                         help='num workers of loading data')
-    parser.add_argument('--model_save_dir', type=str, default='results/models_cls',
+    parser.add_argument('--model_save_dir', type=str, default='results/models_reg',
                         help='path to save results.')
     parser.add_argument('--res_save_dir', type=str, default='results/results_cls',
                         help='path to save results.')
@@ -208,8 +208,8 @@ def parse_args():
 if __name__ == '__main__':
     args = parse_args()
 
-    regression_datasets = ['simsv2', 'mosei']
-    classification_datasets = ['meld', 'cherma']
+    regression_datasets = ['simsv2']
+    classification_datasets = ['cherma']
 
     if args.task_type == 'regression':
         datasets = regression_datasets

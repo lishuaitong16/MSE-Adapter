@@ -16,6 +16,7 @@ __all__ = ['AMIO']
 MODEL_MAP = {
     'cmcm': CMCM,
     'cmcm_cls': CMCM,
+    'cmcm_reg': CMCM,
 }
 
 class AMIO(nn.Module):

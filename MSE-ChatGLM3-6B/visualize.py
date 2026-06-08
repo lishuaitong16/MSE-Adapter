@@ -50,7 +50,7 @@ def parse_log(log_file, dataset=None):
 
 def parse_logs(log_dir, dataset=None):
     all_runs = []
-    for path in sorted(glob.glob(f'{log_dir}/cmcm_cls*.log')):
+    for path in sorted(glob.glob(f'{log_dir}/cmcm_reg*.log')):
         all_runs.extend(parse_log(path, dataset=dataset))
     return all_runs
 
@@ -114,7 +114,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--log_dir', type=str, default=LOG_DIR)
     parser.add_argument('--dataset', type=str, default=None)
-    parser.add_argument('--save', type=str, default='logs/training_curves_cls.png')
+    parser.add_argument('--save', type=str, default='logs/training_curves_reg.png')
     args = parser.parse_args()
 
     runs = parse_logs(args.log_dir, dataset=args.dataset)

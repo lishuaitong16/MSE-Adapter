@@ -33,14 +33,23 @@ class CMCM(nn.Module):
         self.mutli_scale_fusion = mutli_scale_fusion(input_size=fusion_input_size, output_size= text_in, pseudo_tokens= args.pseudo_tokens)
 
         self.train_mode = args.train_mode
-        if args.train_mode == 'classification':
-            n_cls = len(args.label_index_mapping)
+        self.model_variant = args.modelName
+        if args.modelName == 'cmcm_cls':
+            n_cls = args.num_classes
             self.cls_token = nn.Parameter(torch.zeros(1, 1, text_in))
             nn.init.normal_(self.cls_token, std=0.02)
             self.cls_head = nn.Sequential(
                 nn.Linear(text_in, text_in // 2),
                 nn.GELU(),
                 nn.Linear(text_in // 2, n_cls)
+            )
+        elif args.modelName == 'cmcm_reg':
+            self.cls_token = nn.Parameter(torch.zeros(1, 1, text_in))
+            nn.init.normal_(self.cls_token, std=0.02)
+            self.reg_head = nn.Sequential(
+                nn.Linear(text_in, text_in // 2),
+                nn.GELU(),
+                nn.Linear(text_in // 2, 1)
             )
 
     def forward(self, labels, text, audio, video):
@@ -58,13 +67,26 @@ class CMCM(nn.Module):
         fusion_h= self.mutli_scale_fusion(fusion_h)
 
 
-        if self.train_mode == 'classification':
+        if self.model_variant == 'cmcm_cls':
             B = text.size(0)
             cls = self.cls_token.expand(B, -1, -1)
             LLM_input = torch.cat([fusion_h, text, cls], dim=1)
             hidden = self.LLM.forward_cls(LLM_input)
             logits = self.cls_head(hidden)
             loss = F.cross_entropy(logits, labels.long().to(logits.device))
+            res = {
+                'Loss': loss,
+                'Feature_a': audio_h,
+                'Feature_v': video_h,
+                'Feature_f': fusion_h,
+            }
+        elif self.model_variant == 'cmcm_reg':
+            B = text.size(0)
+            cls = self.cls_token.expand(B, -1, -1)
+            LLM_input = torch.cat([fusion_h, text, cls], dim=1)
+            hidden = self.LLM.forward_cls(LLM_input)
+            pred = self.reg_head(hidden).squeeze(-1)
+            loss = F.l1_loss(pred, labels.float().to(pred.device))
             res = {
                 'Loss': loss,
                 'Feature_a': audio_h,
@@ -100,7 +122,7 @@ class CMCM(nn.Module):
 
         # concatenate mutli_scale_fusion and text_embedding
 
-        if self.train_mode == 'classification':
+        if self.model_variant == 'cmcm_cls':
             B = text.size(0)
             cls = self.cls_token.expand(B, -1, -1)
             LLM_input = torch.cat([fusion_h, text, cls], dim=1)
@@ -108,6 +130,15 @@ class CMCM(nn.Module):
             logits = self.cls_head(hidden)
             preds = logits.argmax(dim=-1).tolist()
             return [float(p) for p in preds]
+        elif self.model_variant == 'cmcm_reg':
+            B = text.size(0)
+            cls = self.cls_token.expand(B, -1, -1)
+            LLM_input = torch.cat([fusion_h, text, cls], dim=1)
+            hidden = self.LLM.forward_cls(LLM_input)
+            preds = self.reg_head(hidden).squeeze(-1).tolist()
+            if isinstance(preds, float):
+                preds = [preds]
+            return preds
         else:
             LLM_input = torch.cat([fusion_h, text], dim=1)
             return self.LLM.generate(LLM_input)

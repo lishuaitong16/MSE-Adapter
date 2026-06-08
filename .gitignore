@@ -16,13 +16,22 @@ env/
 # Jupyter
 .ipynb_checkpoints/
 
-# Model checkpoints & results
-results/models/
+# Model checkpoints & results (all variants)
+*/results/models*/
+*/results/results*/
 *.pth
 *.whl
+
+# Datasets
+*.pkl
 
 # Logs
 logs/
 
-# Comparison outputs
+# Comparison outputs & generated images
 comparison_*.csv
+*_comparison.png
+model_comparison*.png
+
+# Scratch / demo files
+test_skill_demo.py

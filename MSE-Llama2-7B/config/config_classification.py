@@ -117,7 +117,7 @@ class ConfigClassification():
                     'label_index_mapping': {'愤怒': 0, '厌恶': 1, '恐惧': 2, '高兴': 3, '平静': 4, '悲伤': 5,
                                             '惊奇': 6},
                     'batch_size': 6,
-                    'learning_rate': 5e-5,
+                    'learning_rate': 5e-4,
                     # feature subNets
                     'a_lstm_hidden_size': 32,
                     'v_lstm_hidden_size': 16,

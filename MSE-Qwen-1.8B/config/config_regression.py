@@ -9,6 +9,7 @@ class ConfigRegression():
         HYPER_MODEL_MAP = {
             'cmcm': self.__CMCM,
             'cmcm_cls': self.__CMCM,
+            'cmcm_reg': self.__CMCM,
         }
         # hyper parameters for datasets
         self.root_dataset_dir = args.root_dataset_dir
