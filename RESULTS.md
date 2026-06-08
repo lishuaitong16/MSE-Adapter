@@ -1,9 +1,9 @@
 # Experiment Results
 
-**复现**：对原论文 `cmcm`（生成式）在三个骨干上的复现结果，数据来自 `results/results/`  
-**改进**：本课程项目新增的判别式变体，回归任务用 `cmcm_reg`，分类任务用 `cmcm_cls`，数据来自 `results/results_reg/` 和 `results/results_cls/`  
+**复现**：对原论文生成式方法在三个骨干上的复现结果  
+**改进**：本课程项目新增的判别式变体（可学习 CLS token + 分类头 / 回归头）
 
-多次运行取最后一次结果，所有实验 seed = `1111`。
+所有实验 seed = `1111`。
 
 ---
 
@@ -85,6 +85,6 @@
 
 ## 小结
 
-**回归任务（MOSEI / SIMSV2）**：`cmcm_reg` 在 MOSEI 上三个骨干均有提升，MAE 降低 2.21–8.56，Corr 提升 2.45–11.33；SIMSV2 上 Qwen 和 Llama2 有明显提升，ChatGLM3-6B 原生成式已接近最优，改进幅度有限。
+**回归任务（MOSEI / SIMSV2）**：判别式回归头在 MOSEI 上对三个骨干均有提升，MAE 降低 2.21–8.56，Corr 提升 2.45–11.33；SIMSV2 上 Qwen 和 Llama2 有明显提升，ChatGLM3-6B 原生成式已接近最优，改进幅度有限。
 
-**分类任务（MELD / CHERMA）**：`cmcm_cls` 在 MELD 上对全部三个骨干均有提升（+0.53–+2.04 W-F1）；CHERMA 上 Qwen 和 Llama2 持平或略有提升，ChatGLM3-6B 有所下降，可能与该骨干在中文生成任务上本身优势较强有关。
+**分类任务（MELD / CHERMA）**：判别式分类头在 MELD 上对全部三个骨干均有提升（+0.53–+2.04 W-F1）；CHERMA 上 Qwen 和 Llama2 持平或略有提升，ChatGLM3-6B 有所下降，可能与该骨干在中文生成任务上本身优势较强有关。
